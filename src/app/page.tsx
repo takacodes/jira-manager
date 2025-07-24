@@ -50,17 +50,14 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] font-sans p-0 m-0 transition-colors duration-300" style={{ fontFamily: 'Inter, Geist, Arial, sans-serif' }}>
-      <header className="w-full px-8 py-6 flex items-center justify-between shadow-sm bg-[var(--card)]/80 sticky top-0 z-10 border-b border-[var(--border)]">
-        <h1 className="text-2xl font-bold tracking-tight text-[var(--accent)]">DRAX</h1>
-      </header>
+
       <main className="max-w-4xl mx-auto py-10 px-4 flex flex-col gap-10">
-        {/* All Issues in BRAVO */}
         <section className="rounded-2xl p-6 bg-[var(--card)] border border-[var(--border)] shadow flex flex-col gap-4">
-          <h2 className="font-semibold text-lg mb-2 text-[var(--accent)]">All Issues (ordered by last updated)</h2>
+          <h2 className="font-semibold text-lg mb-2 text-[var(--accent)]">All Issues</h2>
           {isLoading ? (
             <div className="animate-pulse h-6 w-2/3 bg-[var(--border)] rounded" />
           ) : issues.length === 0 ? (
-            <div className="text-[var(--subtext)]">No issues found for BRAVO</div>
+            <div className="text-[var(--subtext)]">No issues found</div>
           ) : (
             <table className="w-full text-sm border-collapse">
               <thead>
@@ -93,7 +90,7 @@ export default function Dashboard() {
           {isLoading ? (
             <div className="animate-pulse h-6 w-2/3 bg-[var(--border)] rounded" />
           ) : Object.keys(assigneeMap).length === 0 ? (
-            <div className="text-[var(--subtext)]">No personnel found for BRAVO</div>
+            <div className="text-[var(--subtext)]">No personnel found</div>
           ) : (
             <ul className="space-y-6">
               {Object.entries(assigneeMap).map(([assignee, { user, issues }]) => {
