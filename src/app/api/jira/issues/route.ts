@@ -1,19 +1,20 @@
+
 import axios from 'axios';
 import { NextRequest } from 'next/server';
+import { getAndValidateJiraCredentials } from '../utils';
 
-// GET /api/jira/bravo-issues
 export async function GET(_req: NextRequest) {
-  const JIRA_URL = process.env.JIRA_URL;
-  const JIRA_API_KEY = process.env.JIRA_API_KEY;
-  const JIRA_EMAIL = process.env.JIRA_EMAIL;
-
-  if (!JIRA_URL || !JIRA_API_KEY || !JIRA_EMAIL) {
-    return new Response(JSON.stringify({ error: 'Missing Jira credentials' }), { status: 500 });
+  const settings = await getAndValidateJiraCredentials(['jira_url', 'jira_email', 'jira_api_key', 'jira_project']);
+  if ('error' in settings) {
+    return new Response(JSON.stringify({ error: settings.error }), { status: 500 });
   }
+  const { jira_url: JIRA_URL, jira_api_key: JIRA_API_KEY, jira_email: JIRA_EMAIL, jira_project: project } = settings;
 
   try {
-    // Use JQL to get all issues in BRAVO, order by updated desc, include status and time tracking
-    const jql = encodeURIComponent(`project = ${process.env.JIRA_PROJECT} ORDER BY updated DESC`);
+    if (!project) {
+      return new Response(JSON.stringify({ error: 'Missing Jira project name' }), { status: 500 });
+    }
+    const jql = encodeURIComponent(`project = ${project} ORDER BY updated DESC`);
     const response = await axios.get(`${JIRA_URL}/rest/api/3/search?jql=${jql}&fields=summary,status,assignee,updated,timetracking`, {
       headers: {
         'Authorization': `Basic ${Buffer.from(`${JIRA_EMAIL}:${JIRA_API_KEY}`).toString('base64')}`,

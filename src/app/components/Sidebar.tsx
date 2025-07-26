@@ -5,7 +5,10 @@ import { usePathname } from "next/navigation";
 
 const menu = [
   { name: "Task", href: "/" },
-  { name: "Time Spent", href: "/diagram" },
+  { name: "Time Spent (Personnel)", href: "/timespent" },
+  { name: "Time Spent (Task)", href: "/timespent/task" },
+  { name: "Personnel", href: "/personnel" },
+  { name: "Settings", href: "/settings" },
 ];
 
 export default function Sidebar() {
@@ -22,7 +25,8 @@ export default function Sidebar() {
         <span className={`font-bold text-[var(--accent)] text-xl transition-all duration-300 ${collapsed && "hidden"}`}>
         </span>
         <button
-          className="text-[var(--accent)] focus:outline-none"
+          className="text-[var(--accent)] bg-[var(--border)] hover:bg-[var(--accent)] hover:text-white rounded-full w-10 h-10 flex items-center justify-center text-2xl shadow focus:outline-none focus:ring-2 focus:ring-[var(--accent)] transition-all duration-200"
+          style={{ minWidth: 40, minHeight: 40 }}
           onClick={() => setCollapsed((v) => !v)}
           aria-label="Toggle sidebar"
         >

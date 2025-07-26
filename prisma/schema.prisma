@@ -1,0 +1,19 @@
+// Prisma schema for PostgreSQL
+// Save this as prisma/schema.prisma
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Setting {
+  id           Int      @id @default(autoincrement())
+  keySetting   String   @unique
+  valueSetting String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

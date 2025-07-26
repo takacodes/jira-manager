@@ -1,20 +1,31 @@
 
 import axios from 'axios';
-
 import { NextRequest } from 'next/server';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+async function getJiraSettings() {
+  const keys = [
+    'jira_url',
+    'jira_email',
+    'jira_api_key',
+    'jira_project',
+  ];
+  const result = await prisma.setting.findMany({ where: { keySetting: { in: keys } } });
+  const settings = Object.fromEntries(result.map(row => [row.keySetting, row.valueSetting]));
+  return settings;
+}
 
 export async function GET(_req: NextRequest) {
-  // Example: Fetch Jira projects
-  const JIRA_URL = process.env.JIRA_URL;
-  const JIRA_API_KEY = process.env.JIRA_API_KEY;
-  const JIRA_EMAIL = process.env.JIRA_EMAIL;
+  const settings = await getJiraSettings();
+  const { jira_url: JIRA_URL, jira_api_key: JIRA_API_KEY, jira_email: JIRA_EMAIL, jira_project: PROJECT_KEY } = settings;
 
   if (!JIRA_URL || !JIRA_API_KEY || !JIRA_EMAIL) {
     return new Response(JSON.stringify({ error: 'Missing Jira credentials' }), { status: 500 });
   }
 
   try {
-    const PROJECT_KEY = process.env.JIRA_PROJECT;
     const response = await axios.get(`${JIRA_URL}/rest/api/3/project`, {
       headers: {
         'Authorization': `Basic ${Buffer.from(`${JIRA_EMAIL}:${JIRA_API_KEY}`).toString('base64')}`,
